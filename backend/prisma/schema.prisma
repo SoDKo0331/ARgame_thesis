@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String       @id @default(cuid())
+  deviceId        String       @unique @map("device_id")
+  displayName     String       @map("display_name")
+  email           String?      @unique
+  emailVerifiedAt DateTime?    @map("email_verified_at")
+  lastLoginAt     DateTime     @default(now()) @map("last_login_at")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  emailOtps       EmailOtp[]
+  userRewards     UserReward[]
+
+  @@map("users")
+}
+
+model EmailOtp {
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  email     String
+  purpose   String    @default("verify_email")
+  codeHash  String    @map("code_hash")
+  expiresAt DateTime  @map("expires_at")
+  attempts  Int       @default(0)
+  consumedAt DateTime? @map("consumed_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([email, purpose])
+  @@index([userId, purpose])
+  @@map("email_otps")
+}
+
+model Reward {
+  id               String        @id @default(cuid())
+  name             String        @unique
+  description      String
+  imageUrl         String?       @map("image_url")
+  previewPrefabKey String?       @map("preview_prefab_key")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+  tourismSpots TourismSpot[]
+  userRewards  UserReward[]
+
+  @@map("rewards")
+}
+
+model TourismSpot {
+  id           String       @id @default(cuid())
+  name         String       @unique
+  description  String?
+  latitude     Decimal      @db.Decimal(9, 6)
+  longitude    Decimal      @db.Decimal(9, 6)
+  coordinates  Unsupported("geography(Point,4326)")? @map("coordinates")
+  radiusMeters Float        @default(50) @map("radius_meters")
+  isActive     Boolean      @default(true) @map("is_active")
+  modelPrefabKey String?    @map("model_prefab_key")
+  rewardId     String       @map("reward_id")
+  reward       Reward       @relation(fields: [rewardId], references: [id], onDelete: Restrict)
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  userRewards  UserReward[]
+
+  @@index([isActive])
+  @@map("tourism_spots")
+}
+
+model UserReward {
+  id            String      @id @default(cuid())
+  userId        String      @map("user_id")
+  rewardId      String      @map("reward_id")
+  tourismSpotId String      @map("tourism_spot_id")
+  claimedAt     DateTime    @default(now()) @map("claimed_at")
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reward        Reward      @relation(fields: [rewardId], references: [id], onDelete: Restrict)
+  tourismSpot   TourismSpot @relation(fields: [tourismSpotId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, tourismSpotId])
+  @@index([rewardId])
+  @@index([tourismSpotId])
+  @@map("user_rewards")
+}

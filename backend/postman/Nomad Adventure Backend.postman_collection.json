@@ -1,0 +1,144 @@
+{
+  "info": {
+    "name": "Nomad Adventure Backend",
+    "_postman_id": "e3cb3b45-0bf3-4d71-a607-7c1c4ef65c1f",
+    "description": "Phase 1 API collection for Nomad Adventure backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "spotId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Guest Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"deviceId\": \"ios-device-001\",\n  \"displayName\": \"Guest UB\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/guest-login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "guest-login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Spots",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/spots",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "spots"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Spot By Id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/spots/{{spotId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "spots",
+            "{{spotId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Claim Spot Reward",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"{{userId}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/spots/{{spotId}}/claim",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "spots",
+            "{{spotId}}",
+            "claim"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get User Rewards",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}/rewards",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "users",
+            "{{userId}}",
+            "rewards"
+          ]
+        }
+      }
+    }
+  ]
+}

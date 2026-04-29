@@ -1,0 +1,52 @@
+Unity Editor version:    2022.3.62f3 (96770f904ca7)
+Branch:                  2022.3/respin/2022.3.62f2-4af31df585-v2
+Build type:              Release
+Batch mode:              YES
+macOS version:           Version 15.6.1 (Build 24G90)
+Darwin version:          24.6.0
+Architecture:            arm64
+Running under Rosetta:   NO
+Available memory:        18432 MB
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-dmtmobiledev" at "2026-04-21T23:09:56.93444Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 6432, path: "/Applications/Unity Hub.app/Contents/Frameworks/UnityLicensingClient_V1.app/Contents/MacOS/Unity.Licensing.Client")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.17.4+4293ba1
+  Session Id:              60bf291afa704a5eb037504efff42922
+  Correlation Id:          931be2cfbbfad97eac42db3ac6296438
+  External correlation Id: 3499956815480390092
+  Machine Id:              i8cW8ipVzD9hT+imRTbPL7G5Dko=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-dmtmobiledev" (connect: 0.00s, validation: 0.01s, handshake: 0.18s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-dmtmobiledev-notifications" at "2026-04-21T23:09:57.123961Z"
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully updated license
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Serial number assigned to: "18968383031167-UnityPersXXXX"
+Pro License: NO
+[Licensing::Client] Successfully resolved entitlement details
+Launching external process: /Applications/Unity/Hub/Editor/2022.3.62f3/Unity.app/Contents/Resources/PackageManager/Server/UnityPackageManager
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/2022.3.62f3/Unity.app/Contents/MacOS/Unity
+-batchmode
+-quit
+-projectPath
+.
+-executeMethod
+NomadUnityExportBuilder.ExportIosXcodeProject
+-logFile
+build.log
+Successfully changed project path to: /Users/dmtmobiledev/development/Test/NomadAdventureV2
+/Users/dmtmobiledev/development/Test/NomadAdventureV2
+It looks like another Unity instance is running with this project open.
+
+Multiple Unity instances cannot open the same project.
+
+Project: /Users/dmtmobiledev/development/Test/NomadAdventureV2
+Fatal Error! It looks like another Unity instance is running with this project open.
+
+Multiple Unity instances cannot open the same project.
+
+Project: /Users/dmtmobiledev/development/Test/NomadAdventureV2
+[Package Manager] Server::Kill -- Server was shutdown

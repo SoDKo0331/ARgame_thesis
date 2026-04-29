@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "NomadAdventure",
+    "slug": "nomad-adventure",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logo.png",
+    "scheme": "nomadapp",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.nomadapp.adventure",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow Nomad Adventure to use the camera for AR scenes and reward previews."
+      }
+    },
+    "android": {
+      "package": "com.nomadapp.adventure",
+      "permissions": [
+        "CAMERA"
+      ],
+      "adaptiveIcon": {
+        "backgroundColor": "#00ADB5",
+        "foregroundImage": "./assets/images/logo.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/logo.png"
+    },
+    "plugins": [
+      "expo-router",
+      "./withUnity",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo.png",
+          "imageWidth": 220,
+          "resizeMode": "contain"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Nomad to use your location."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

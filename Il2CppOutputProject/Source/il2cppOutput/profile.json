@@ -1,0 +1,102 @@
+{
+
+"Instructions Readme": "1) Open Chrome or Edge, 2) go to chrome://tracing, 3) click Load, 4) navigate to this file.",
+"processInfo": {
+    "os": "Unix 15.6.1",
+    "cpuCount": "11",
+    "mappedPhysicalMemory": "103mb",
+    "commandLine": "\"/Users/dmtmobiledev/development/Test/Nomad Adventure/ios/Il2CppOutputProject/IL2CPP/build/deploy_arm64/il2cpp.dll\" --compile-cpp --platform=iOS \"--baselib-directory=/Users/dmtmobiledev/development/Test/Nomad Adventure/ios/Libraries\" --additional-defines=IL2CPP_DEBUG=0 --incremental-g-c-time-slice=3 --dotnetprofile=unityaot-macos --profiler-report --print-command-line \"--external-lib-il2-cpp=/Users/dmtmobiledev/development/Test/Nomad Adventure/ios/Libraries/libil2cpp.a\" --generatedcppdir=Il2CppOutputProject/Source/il2cppOutput --architecture=arm64 \"--outputpath=/Users/dmtmobiledev/development/Test/Nomad Adventure/ios/build/test-config/libGameAssembly.a\" \"--cachedirectory=/Users/dmtmobiledev/development/Test/Nomad Adventure/ios/build/test-temp/artifacts/arm64\" --configuration=Debug"
+},
+
+"traceEvents":[
+{ "pid": 42179, "tid": -1, "ph": "M", "name": "process_name", "args": { "name": "il2cpp_outer" } },
+{ "pid": 42179, "tid": -1, "ph": "M", "name": "process_sort_index", "args": { "sort_index": "-1" } },
+{ "pid": 42179, "tid": 12884901888, "ph": "M", "name": "thread_name", "args": { "name": "GC - Gen2" } },
+{ "pid": 42179, "tid": 8589934592, "ph": "M", "name": "thread_name", "args": { "name": "GC - Gen1" } },
+{ "pid": 42179, "tid": 4294967296, "ph": "M", "name": "thread_name", "args": { "name": "GC - Gen0" } },
+{ "pid": 42179, "tid": 1, "ph": "M", "name": "thread_name", "args": { "name": "Main thread" } },
+{ "pid": 42179, "tid": 1, "ts": 1773901531340191, "dur": 1353553, "ph": "X", "name": "il2cpp.exe", "args": {"analytics": "1"} },
+{ "pid": 42179, "tid": 1, "ts": 1773901531341785, "dur": 41056, "ph": "X", "name": "ParseArguments", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901531382843, "dur": 5756, "ph": "X", "name": "RegisterRuntimeEventListeners", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901531397794, "dur": 1264092, "ph": "X", "name": "BeeDriverRunner.ExecuteIl2Cpp", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901532665278, "dur": 4411, "ph": "X", "name": "Write Analytics", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901532693747, "dur": 12060, "ph": "X", "name": "UnregisterRuntimeEventListeners", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901532707600, "dur": 1069, "ph": "X", "name": "ChromeTraceHeader", "args": {} },
+{ "pid": 42179, "tid": -1, "ph": "M", "name": "process_name", "args": { "name": "BeeDriver" } },
+{ "pid": 42179, "tid": -1, "ph": "M", "name": "process_sort_index", "args": { "sort_index": "-2" } },
+{ "pid": 42179, "tid": 1, "ph": "M", "name": "thread_name", "args": { "name": "Main thread" } },
+{ "pid": 42179, "tid": 1, "ts": 1773901531457446, "dur": 1205704, "ph": "X", "name": "Build FinalProgram", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901531458650, "dur": 7421, "ph": "X", "name": "Writing build program input data", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901531466087, "dur": 161319, "ph": "X", "name": "Running build system backend", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901531627420, "dur": 658827, "ph": "X", "name": "Running build program", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901532286251, "dur": 376823, "ph": "X", "name": "Running build system backend", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901532663106, "dur": 44, "ph": "X", "name": "Finishing", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901532668128, "dur": 1078, "ph": "X", "name": "Main thread", "args": {} },
+{ "pid": 35942, "tid": -1, "ph": "M", "name": "process_name", "args": { "name": "il2cpp.dll" } },
+{ "pid": 35942, "tid": -1, "ph": "M", "name": "process_sort_index", "args": { "sort_index": "-1" } },
+{ "pid": 35942, "tid": 1, "ph": "M", "name": "thread_name", "args": { "name": "Main thread" } },
+{ "pid": 35942, "tid": 1, "ts": 1773901531642021, "dur": 637231, "ph": "X", "name": "BuildProgram", "args": {} },
+{ "pid": 35942, "tid": 1, "ts": 1773901531642031, "dur": 59473, "ph": "X", "name": "BuildProgramContextConstructor", "args": {} },
+{ "pid": 35942, "tid": 1, "ts": 1773901531772814, "dur": 5040, "ph": "X", "name": "SetupConversion", "args": {} },
+{ "pid": 35942, "tid": 1, "ts": 1773901532158315, "dur": 99805, "ph": "X", "name": "AppPackage.Setup", "args": {} },
+{ "pid": 35942, "tid": 1, "ts": 1773901532159867, "dur": 90584, "ph": "X", "name": "GeneratedCode.SetupSpecificConfiguration", "args": {} },
+{ "pid": 35942, "tid": 1, "ts": 1773901532160401, "dur": 89928, "ph": "X", "name": "SetupSpecificConfigImpl libGameAssembly", "args": {"info": "debug_iOS_arm64"} },
+{ "pid": 35942, "tid": 1, "ts": 1773901532264296, "dur": 2721, "ph": "X", "name": "OutputData.Write", "args": {} },
+{ "pid": 35942, "tid": 1, "ts": 1773901532267018, "dur": 12232, "ph": "X", "name": "Backend.Write", "args": {} },
+{ "pid": 35942, "tid": 1, "ts": 1773901532267991, "dur": 10876, "ph": "X", "name": "JsonToString", "args": {} },
+{ "pid": 35942, "tid": 1, "ts": 1773901532283475, "dur": 1448, "ph": "X", "name": "Main thread", "args": {} },
+{ "pid": 35942, "tid": 1, "ts": 1773901532283178, "dur": 1896, "ph": "X", "name": "Write chrome-trace events", "args": {} },
+{ "cat":"", "pid":12345, "tid":0, "ts":0, "ph":"M", "name":"process_name", "args": { "name":"bee_backend" } }
+,{ "pid":12345, "tid":0, "ts":1773901532315972, "dur":8459, "ph":"X", "name": "DriverInitData",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1773901532324446, "dur":83, "ph":"X", "name": "BuildQueueInit",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1773901532324541, "dur":330345, "ph":"X", "name": "WaitForBuildFinished", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1773901532654931, "dur":68, "ph":"X", "name": "JoinBuildThread",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1773901532655042, "dur":83, "ph":"X", "name": "ThreadStateDestroy",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1773901532655266, "dur":554, "ph":"X", "name": "Tundra",  "args": { "detail":"Write AllBuiltNodes" }}
+,{ "pid":12345, "tid":0, "ts":1773901532655820, "dur":278, "ph":"X", "name": "Tundra",  "args": { "detail":"SaveScanCache" }}
+,{ "pid":12345, "tid":1, "ts":1773901532324469, "dur":75, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":1, "ts":1773901532324546, "dur":6324, "ph":"X", "name": "CheckDagSignatures",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":1, "ts":1773901532331083, "dur":89, "ph":"X", "name": "WriteText",  "args": { "detail":"zmq4/_dummy_for_header_discovery" }}
+,{ "pid":12345, "tid":1, "ts":1773901532331192, "dur":290946, "ph":"X", "name": "ScanImplicitDeps",  "args": { "detail":"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++" }}
+,{ "pid":12345, "tid":1, "ts":1773901532622146, "dur":1182, "ph":"X", "name": "ScanImplicitDeps",  "args": { "detail":"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool" }}
+,{ "pid":12345, "tid":1, "ts":1773901532331173, "dur":292158, "ph":"X", "name": "CheckInputSignature",  "args": { "detail":"C_iOS_arm64 zmq4/af5kskhj2wl2.o" }}
+,{ "pid":12345, "tid":1, "ts":1773901532623348, "dur":31301, "ph":"X", "name": "C_iOS_arm64",  "args": { "detail":"zmq4/af5kskhj2wl2.o" }}
+,{ "pid":12345, "tid":2, "ts":1773901532324476, "dur":71, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":2, "ts":1773901532324549, "dur":259, "ph":"X", "name": "EarlyStatNonGeneratedFile",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":2, "ts":1773901532324808, "dur":6158, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":2, "ts":1773901532330966, "dur":323993, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1773901532324482, "dur":68, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1773901532324550, "dur":6406, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":3, "ts":1773901532330956, "dur":323810, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1773901532324489, "dur":64, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1773901532324553, "dur":6368, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":4, "ts":1773901532330921, "dur":323975, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1773901532324496, "dur":59, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1773901532324555, "dur":6369, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":5, "ts":1773901532330924, "dur":324011, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1773901532324501, "dur":56, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1773901532324557, "dur":6377, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":6, "ts":1773901532330934, "dur":324019, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1773901532324508, "dur":51, "ph":"X", "name": "FirstLock",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1773901532324559, "dur":6365, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":7, "ts":1773901532330925, "dur":323998, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1773901532324561, "dur":6337, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":8, "ts":1773901532331191, "dur":146, "ph":"X", "name": "CopyFiles",  "args": { "detail":"/Users/dmtmobiledev/development/Test/Nomad Adventure/ios/build/test-config/libil2cpp.a" }}
+,{ "pid":12345, "tid":8, "ts":1773901532331341, "dur":323629, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":9, "ts":1773901532324563, "dur":6330, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":9, "ts":1773901532331209, "dur":86, "ph":"X", "name": "WriteText",  "args": { "detail":"zmq4/libGameAssembly.objectfiles" }}
+,{ "pid":12345, "tid":9, "ts":1773901532331296, "dur":323500, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":10, "ts":1773901532324564, "dur":6391, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":10, "ts":1773901532330955, "dur":323821, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":11, "ts":1773901532324568, "dur":6332, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":11, "ts":1773901532330901, "dur":323969, "ph":"X", "name": "WaitingForWork", "cname":"thread_state_sleeping",  "args": { "detail":"" }}
+,{ "pid":12345, "tid":0, "ts":1773901532656384, "dur":65, "ph":"X", "name": "ProfilerWriteOutput" }
+,{ "pid": 42179, "tid": 1, "ts": 1773901532669364, "dur": 442, "ph": "X", "name": "Wait for external events", "args": {"First to finish": "buildprogram0.traceevents"} },
+{ "pid": 42179, "tid": 1, "ts": 1773901532669905, "dur": 154, "ph": "X", "name": "Wait for external events", "args": {"First to finish": "backend_profiler1.traceevents"} },
+{ "pid": 42179, "tid": 1, "ts": 1773901532669846, "dur": 58, "ph": "X", "name": "buildprogram0.traceevents", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901532670065, "dur": 51, "ph": "X", "name": "backend_profiler1.traceevents", "args": {} },
+{ "pid": 42179, "tid": 1, "ts": 1773901532667803, "dur": 2597, "ph": "X", "name": "Write chrome-trace events", "args": {} },
+{}
+
+]
+}

@@ -1,0 +1,26 @@
+diff --git a/ios/RNUnityView.h b/ios/RNUnityView.h
+index 23824e46ca2dbd95c17698e61aa502ed6d8eeb77..43c471db713c882c24384b1cbe86401a462906a3 100644
+--- a/ios/RNUnityView.h
++++ b/ios/RNUnityView.h
+@@ -1,7 +1,7 @@
+ #import <React/RCTView.h>
+ #import <React/RCTEventDispatcher.h>
+ #include <UnityFramework/UnityFramework.h>
+-#include <UnityFramework/NativeCallProxy.h>
++#import "NativeCallProxy.h"
+ 
+ // This guard prevent this file to be compiled in the old architecture.
+ #ifdef RCT_NEW_ARCH_ENABLED
+diff --git a/react-native-unity.podspec b/react-native-unity.podspec
+index af0ea2ca87b9630a7175796d02458f92e0f08651..6df4945cc8d1eedfd39d13020c6f4735ec9b42a3 100644
+--- a/react-native-unity.podspec
++++ b/react-native-unity.podspec
+@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
+   s.platforms    = { :ios => "12.4" }
+   s.source       = { :git => "https://github.com/azesmway/react-native-unity.git", :tag => "#{s.version}" }
+ 
+-  s.source_files = "ios/**/*.{h,m,mm}"
++  s.source_files = ["ios/**/*.{h,m,mm}", "unity/Assets/Plugins/iOS/**/*.{h,m,mm}"]
+ 
+   # Use install_modules_dependencies helper to install the dependencies if React Native version >=0.71.0.
+   # See https://github.com/facebook/react-native/blob/febf6b7f33fdb4904669f99d795eba4c0f95d7bf/scripts/cocoapods/new_architecture.rb#L79.
