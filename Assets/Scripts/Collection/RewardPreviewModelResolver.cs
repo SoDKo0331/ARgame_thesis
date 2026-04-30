@@ -69,6 +69,66 @@ public static class RewardPreviewModelResolver
         return root;
     }
 
+    public static void DisableAuxiliaryComponents(GameObject modelRoot)
+    {
+        if (modelRoot == null)
+        {
+            return;
+        }
+
+        Camera[] cameras = modelRoot.GetComponentsInChildren<Camera>(true);
+        for (int i = 0; i < cameras.Length; i++)
+        {
+            Camera camera = cameras[i];
+            if (camera == null)
+            {
+                continue;
+            }
+
+            camera.enabled = false;
+            camera.tag = "Untagged";
+        }
+
+        AudioListener[] audioListeners = modelRoot.GetComponentsInChildren<AudioListener>(true);
+        for (int i = 0; i < audioListeners.Length; i++)
+        {
+            if (audioListeners[i] != null)
+            {
+                audioListeners[i].enabled = false;
+            }
+        }
+
+        Light[] lights = modelRoot.GetComponentsInChildren<Light>(true);
+        for (int i = 0; i < lights.Length; i++)
+        {
+            if (lights[i] != null)
+            {
+                lights[i].enabled = false;
+            }
+        }
+
+        Canvas[] canvases = modelRoot.GetComponentsInChildren<Canvas>(true);
+        for (int i = 0; i < canvases.Length; i++)
+        {
+            if (canvases[i] != null)
+            {
+                canvases[i].enabled = false;
+            }
+        }
+
+        if (cameras.Length > 0 || audioListeners.Length > 0 || lights.Length > 0 || canvases.Length > 0)
+        {
+            Debug.Log(
+                "[RewardPreviewModelResolver] Disabled imported auxiliary components on preview model '" +
+                modelRoot.name +
+                "' (cameras=" + cameras.Length +
+                ", audioListeners=" + audioListeners.Length +
+                ", lights=" + lights.Length +
+                ", canvases=" + canvases.Length +
+                ").");
+        }
+    }
+
     private static GameObject LoadExactPrefab(string rawKey)
     {
         if (string.IsNullOrEmpty(rawKey))
@@ -89,6 +149,18 @@ public static class RewardPreviewModelResolver
             if (prefab != null)
             {
                 Debug.Log("[RewardPreviewModelResolver] Using test preview alias '" + aliasKey + "' for missing key '" + rawKey + "'.");
+                return prefab;
+            }
+        }
+
+        string fileNameKey = ExtractFileNameKey(rawKey);
+        if (!string.IsNullOrEmpty(fileNameKey) &&
+            !string.Equals(fileNameKey, rawKey, StringComparison.OrdinalIgnoreCase))
+        {
+            prefab = LoadDirectPrefab(fileNameKey);
+            if (prefab != null)
+            {
+                Debug.Log("[RewardPreviewModelResolver] Resolved preview key via file name '" + fileNameKey + "' from '" + rawKey + "'.");
                 return prefab;
             }
         }
@@ -162,5 +234,21 @@ public static class RewardPreviewModelResolver
         }
 
         return builder.ToString();
+    }
+
+    private static string ExtractFileNameKey(string rawKey)
+    {
+        if (string.IsNullOrEmpty(rawKey))
+        {
+            return string.Empty;
+        }
+
+        int slashIndex = Math.Max(rawKey.LastIndexOf('/'), rawKey.LastIndexOf('\\'));
+        if (slashIndex < 0 || slashIndex >= rawKey.Length - 1)
+        {
+            return rawKey;
+        }
+
+        return rawKey.Substring(slashIndex + 1);
     }
 }

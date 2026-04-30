@@ -31,6 +31,7 @@ public class NativeBridgeManager : MonoBehaviour
         public float currentHorizontalAccuracyMeters;
         public bool hasCurrentHeading;
         public float currentHeadingDegrees;
+        public bool cameraPermissionGranted;
     }
 
     public static NativeBridgeManager Instance;
@@ -102,6 +103,7 @@ public class NativeBridgeManager : MonoBehaviour
         if (IsDuplicatePayload(jsonString))
         {
             Debug.Log("[NativeBridge] Duplicate payload ignored.");
+            SendStatusToRN("payload_received_duplicate");
             return;
         }
 
@@ -109,7 +111,7 @@ public class NativeBridgeManager : MonoBehaviour
         if (payload == null)
         {
             GameSession.ClearCollectionPreviewData();
-            GameSession.selectedSpotId = jsonString;
+            SendErrorToRN("invalid_payload", "React Native payload could not be parsed by Unity.");
             return;
         }
 
@@ -118,6 +120,7 @@ public class NativeBridgeManager : MonoBehaviour
             GameSession.userId = payload.userId;
         }
 
+        GameSession.SetHostCameraPermissionGranted(payload.cameraPermissionGranted);
         ApplyCurrentLocation(payload);
         SendStatusToRN("payload_received");
 
@@ -215,6 +218,11 @@ public class NativeBridgeManager : MonoBehaviour
     private System.Collections.IEnumerator SendReadyMessageNextFrame()
     {
         yield return null;
+        if (NomadARRuntimePermissionGate.Instance != null && !NomadARRuntimePermissionGate.Instance.IsReady)
+        {
+            yield break;
+        }
+
         SendReadyToRN();
     }
 

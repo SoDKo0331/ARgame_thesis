@@ -11,11 +11,26 @@ public class CollectedRewardARPreviewSpawner : MonoBehaviour
     public static CollectedRewardARPreviewSpawner Instance { get; private set; }
 
     private static readonly List<ARRaycastHit> hits = new List<ARRaycastHit>();
+    private static readonly Vector2[] previewPlaneViewportSamples =
+    {
+        new Vector2(0.5f, 0.62f),
+        new Vector2(0.5f, 0.56f),
+        new Vector2(0.42f, 0.60f),
+        new Vector2(0.58f, 0.60f)
+    };
+
+    private const float MinimumPreviewPlaneDistance = 0.22f;
+    private const float MaximumPreviewPlaneDistance = 1.35f;
+    private const float FallbackPreviewDistance = 0.72f;
+    private const float FallbackPreviewHeightOffset = -0.10f;
+    private const float PlacementStabilizationDurationSeconds = 1.2f;
+    private const float TargetPreviewHeightMeters = 0.42f;
 
     private Camera arCamera;
     private ARRaycastManager raycastManager;
     private GameObject spawnedPreviewObject;
     private Coroutine spawnRoutine;
+    private Coroutine placementStabilizationRoutine;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void EnsureExists()
@@ -75,14 +90,23 @@ public class CollectedRewardARPreviewSpawner : MonoBehaviour
 
     private IEnumerator SpawnPreviewWhenReady()
     {
-        yield return null;
-        yield return new WaitForSeconds(1.25f);
+        float deadline = Time.realtimeSinceStartup + 5f;
+        while (Time.realtimeSinceStartup < deadline)
+        {
+            arCamera = ResolvePreviewCamera();
+            raycastManager = ResolveRaycastManager();
 
-        arCamera = Camera.main != null ? Camera.main : FindObjectOfType<Camera>();
-        raycastManager = FindObjectOfType<ARRaycastManager>();
+            if (arCamera != null)
+            {
+                break;
+            }
+
+            yield return null;
+        }
 
         if (arCamera == null)
         {
+            Debug.LogWarning("[CollectedRewardARPreviewSpawner] Unable to resolve AR camera for preview spawn.");
             yield break;
         }
 
@@ -102,6 +126,7 @@ public class CollectedRewardARPreviewSpawner : MonoBehaviour
             ? Instantiate(previewPrefab)
             : RewardPreviewModelResolver.CreateFallbackPreviewObject();
 
+        RewardPreviewModelResolver.DisableAuxiliaryComponents(previewObject);
         previewObject.name = string.IsNullOrEmpty(GameSession.previewRewardName)
             ? "CollectedRewardPreview"
             : "CollectedRewardPreview_" + GameSession.previewRewardName;
@@ -118,22 +143,24 @@ public class CollectedRewardARPreviewSpawner : MonoBehaviour
         interaction.Initialize(previewRoot);
 
         spawnedPreviewObject = previewRoot.gameObject;
+
+        if (placementStabilizationRoutine != null)
+        {
+            StopCoroutine(placementStabilizationRoutine);
+        }
+
+        placementStabilizationRoutine = StartCoroutine(StabilizePreviewPlacement(previewRoot));
     }
 
     private void PlacePreview(Transform previewRoot)
     {
-        Vector2 screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
-
-        if (raycastManager != null && raycastManager.Raycast(screenCenter, hits, TrackableType.PlaneWithinPolygon))
+        if (TryGetNearbyPlanePose(out Pose planePose))
         {
-            Pose hitPose = hits[0].pose;
-            previewRoot.position = hitPose.position + Vector3.up * 0.02f;
+            previewRoot.position = planePose.position + Vector3.up * 0.03f;
         }
         else
         {
-            Vector3 fallbackPosition = arCamera.transform.position + arCamera.transform.forward * 1.15f;
-            fallbackPosition.y -= 0.08f;
-            previewRoot.position = fallbackPosition;
+            previewRoot.position = GetFallbackPreviewPosition();
         }
 
         Vector3 lookDirection = arCamera.transform.position - previewRoot.position;
@@ -156,12 +183,12 @@ public class CollectedRewardARPreviewSpawner : MonoBehaviour
         float boundsHeight = CalculateBoundsHeight(rootObject.transform);
         if (boundsHeight > 0.001f)
         {
-            float uniformScale = Mathf.Clamp(0.26f / boundsHeight, 0.08f, 0.55f);
+            float uniformScale = Mathf.Clamp(TargetPreviewHeightMeters / boundsHeight, 0.12f, 0.9f);
             rootObject.transform.localScale = Vector3.one * uniformScale;
         }
         else
         {
-            rootObject.transform.localScale = Vector3.one * 0.25f;
+            rootObject.transform.localScale = Vector3.one * 0.32f;
         }
 
         AddPreviewLabel(rootObject.transform);
@@ -227,6 +254,12 @@ public class CollectedRewardARPreviewSpawner : MonoBehaviour
             spawnRoutine = null;
         }
 
+        if (placementStabilizationRoutine != null)
+        {
+            StopCoroutine(placementStabilizationRoutine);
+            placementStabilizationRoutine = null;
+        }
+
         if (spawnedPreviewObject != null)
         {
             Destroy(spawnedPreviewObject);
@@ -237,5 +270,102 @@ public class CollectedRewardARPreviewSpawner : MonoBehaviour
     private void OnDestroy()
     {
         CleanupSpawnedPreview();
+    }
+
+    private static Camera ResolvePreviewCamera()
+    {
+        if (NomadARRuntimePermissionGate.Instance?.PrimaryArCamera != null)
+        {
+            return NomadARRuntimePermissionGate.Instance.PrimaryArCamera;
+        }
+
+        return Camera.main != null ? Camera.main : FindObjectOfType<Camera>();
+    }
+
+    private static ARRaycastManager ResolveRaycastManager()
+    {
+        if (NomadARRuntimePermissionGate.Instance?.PrimaryRaycastManager != null)
+        {
+            return NomadARRuntimePermissionGate.Instance.PrimaryRaycastManager;
+        }
+
+        return FindObjectOfType<ARRaycastManager>();
+    }
+
+    private IEnumerator StabilizePreviewPlacement(Transform previewRoot)
+    {
+        float deadline = Time.realtimeSinceStartup + PlacementStabilizationDurationSeconds;
+        while (previewRoot != null && Time.realtimeSinceStartup < deadline)
+        {
+            arCamera = ResolvePreviewCamera();
+            raycastManager = ResolveRaycastManager();
+
+            if (arCamera != null)
+            {
+                PlacePreview(previewRoot);
+            }
+
+            yield return null;
+        }
+
+        placementStabilizationRoutine = null;
+    }
+
+    private bool TryGetNearbyPlanePose(out Pose bestPose)
+    {
+        bestPose = default;
+
+        if (raycastManager == null || arCamera == null)
+        {
+            return false;
+        }
+
+        bool foundPose = false;
+        float bestDistance = float.MaxValue;
+
+        for (int i = 0; i < previewPlaneViewportSamples.Length; i++)
+        {
+            Vector2 viewportSample = previewPlaneViewportSamples[i];
+            Vector2 screenPoint = new Vector2(Screen.width * viewportSample.x, Screen.height * viewportSample.y);
+
+            if (!raycastManager.Raycast(screenPoint, hits, TrackableType.PlaneWithinPolygon))
+            {
+                continue;
+            }
+
+            Pose candidatePose = hits[0].pose;
+            if (Vector3.Dot(candidatePose.up, Vector3.up) < 0.75f)
+            {
+                continue;
+            }
+
+            float candidateDistance = Vector3.Distance(arCamera.transform.position, candidatePose.position);
+            if (candidateDistance < MinimumPreviewPlaneDistance || candidateDistance > MaximumPreviewPlaneDistance)
+            {
+                continue;
+            }
+
+            if (!foundPose || candidateDistance < bestDistance)
+            {
+                foundPose = true;
+                bestDistance = candidateDistance;
+                bestPose = candidatePose;
+            }
+        }
+
+        return foundPose;
+    }
+
+    private Vector3 GetFallbackPreviewPosition()
+    {
+        Vector3 forward = arCamera != null ? arCamera.transform.forward : Vector3.forward;
+        forward.y = Mathf.Clamp(forward.y, -0.16f, 0.08f);
+        if (forward.sqrMagnitude < 0.0001f)
+        {
+            forward = Vector3.forward;
+        }
+
+        forward.Normalize();
+        return arCamera.transform.position + forward * FallbackPreviewDistance + Vector3.up * FallbackPreviewHeightOffset;
     }
 }

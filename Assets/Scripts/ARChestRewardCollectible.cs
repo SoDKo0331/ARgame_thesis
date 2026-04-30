@@ -43,7 +43,7 @@ public class ARChestRewardCollectible : MonoBehaviour
 
         if (targetCamera == null)
         {
-            targetCamera = Camera.main;
+            targetCamera = ResolveTargetCamera();
         }
 
         float elapsed = Time.time - spawnTime;
@@ -105,7 +105,7 @@ public class ARChestRewardCollectible : MonoBehaviour
 
         if (targetCamera == null)
         {
-            targetCamera = Camera.main;
+            targetCamera = ResolveTargetCamera();
         }
 
         if (targetCamera == null)
@@ -287,6 +287,7 @@ public class ARChestRewardCollectible : MonoBehaviour
         instance.transform.localPosition = Vector3.zero;
         instance.transform.localRotation = Quaternion.identity;
         instance.transform.localScale = Vector3.one;
+        RewardPreviewModelResolver.DisableAuxiliaryComponents(instance);
 
         Bounds modelBounds = CalculateLocalBounds(showcaseRoot);
         float targetHeight = 0.38f;
@@ -494,5 +495,15 @@ public class ARChestRewardCollectible : MonoBehaviour
         }
 
         Debug.Log("[ARChestRewardCollectible] " + message, this);
+    }
+
+    private static Camera ResolveTargetCamera()
+    {
+        if (NomadARRuntimePermissionGate.Instance?.PrimaryArCamera != null)
+        {
+            return NomadARRuntimePermissionGate.Instance.PrimaryArCamera;
+        }
+
+        return Camera.main != null ? Camera.main : FindObjectOfType<Camera>();
     }
 }

@@ -101,7 +101,7 @@ public class CollectedRewardPreviewController : MonoBehaviour
             yield break;
         }
 
-        previewCamera = Camera.main != null ? Camera.main : FindObjectOfType<Camera>();
+        previewCamera = ResolvePreviewCamera();
         if (previewCamera == null)
         {
             Debug.LogWarning("[CollectedRewardPreviewController] No preview camera found.");
@@ -124,7 +124,7 @@ public class CollectedRewardPreviewController : MonoBehaviour
 
         if (previewCamera == null)
         {
-            previewCamera = Camera.main != null ? Camera.main : FindObjectOfType<Camera>();
+            previewCamera = ResolvePreviewCamera();
             if (previewCamera == null)
             {
                 return;
@@ -581,5 +581,15 @@ public class CollectedRewardPreviewController : MonoBehaviour
     private void OnDestroy()
     {
         CleanupPreview();
+    }
+
+    private static Camera ResolvePreviewCamera()
+    {
+        if (NomadARRuntimePermissionGate.Instance?.PrimaryArCamera != null)
+        {
+            return NomadARRuntimePermissionGate.Instance.PrimaryArCamera;
+        }
+
+        return Camera.main != null ? Camera.main : FindObjectOfType<Camera>();
     }
 }

@@ -23,6 +23,7 @@ public static class GameSession
     public static float currentHorizontalAccuracyMeters;
     public static bool hasCurrentHeading;
     public static float currentHeadingDegrees;
+    public static bool hostCameraPermissionGranted;
     public static bool isCollectionPreviewMode;
     public static string previewRewardId;
     public static string previewRewardName;
@@ -119,6 +120,11 @@ public static class GameSession
         currentHeadingDegrees = Mathf.Repeat(headingDegreesValue, 360f);
     }
 
+    public static void SetHostCameraPermissionGranted(bool granted)
+    {
+        hostCameraPermissionGranted = granted;
+    }
+
     public static void ClearCollectionPreviewData()
     {
         isCollectionPreviewMode = false;
@@ -155,6 +161,7 @@ public static class GameSession
         currentHorizontalAccuracyMeters = 0f;
         hasCurrentHeading = false;
         currentHeadingDegrees = 0f;
+        hostCameraPermissionGranted = false;
         ClearCollectionPreviewData();
         Debug.Log("[GameSession] Clear");
     }

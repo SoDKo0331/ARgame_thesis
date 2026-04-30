@@ -71,7 +71,14 @@ public class ARChestInteraction : MonoBehaviour
             return;
         }
 
-        Ray ray = Camera.main.ScreenPointToRay(screenPos);
+        Camera sceneCamera = ResolveSceneCamera();
+        if (sceneCamera == null)
+        {
+            LogInfo("Chest tap ignored because no AR camera could be resolved.");
+            return;
+        }
+
+        Ray ray = sceneCamera.ScreenPointToRay(screenPos);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
@@ -175,7 +182,7 @@ public class ARChestInteraction : MonoBehaviour
         collectible.Initialize(
             GetCollectibleDisplayName(),
             GetCollectibleModelPrefabKey(),
-            Camera.main,
+            ResolveSceneCamera(),
             HandleRewardCollected);
 
         activeCollectible = collectible;
@@ -335,5 +342,15 @@ public class ARChestInteraction : MonoBehaviour
         }
 
         return GameSession.rewardPreviewPrefabKey;
+    }
+
+    private static Camera ResolveSceneCamera()
+    {
+        if (NomadARRuntimePermissionGate.Instance?.PrimaryArCamera != null)
+        {
+            return NomadARRuntimePermissionGate.Instance.PrimaryArCamera;
+        }
+
+        return Camera.main != null ? Camera.main : FindObjectOfType<Camera>();
     }
 }
