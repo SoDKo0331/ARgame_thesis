@@ -1,0 +1,109 @@
+\chapter{КОДЫН ЖИШЭЭ БА ӨГӨГДЛИЙН СХЕМ}
+\begin{sloppy}
+
+Энэхүү хавсралтад дипломын ажлын үндсэн логикийг илэрхийлэх representative кодын жишээ болон өгөгдлийн сангийн схемийг оруулав. Доорх листингүүд нь байршлын шалгалт, AR placement, авдрын interaction, reward claim хамгаалалт, өгөгдлийн бүтэц зэрэг системийн цөм хэсгүүдийг тайлбарлах зорилготой.
+
+\section{Ойролцоох байршил шалгах код}
+
+\begin{lstlisting}[language={[Sharp]C}, caption=TourismSpotManager - proximity шалгах үндсэн логик]
+private void UpdateNearbySpots()
+{
+    ResetRuntimeState();
+
+    if (locationTracker == null || !locationTracker.IsLocationReady || tourismSpots.Count == 0)
+    {
+        return;
+    }
+
+    foreach (TourismSpot spot in tourismSpots)
+    {
+        float distanceMeters = CalculateDistanceMeters(
+            locationTracker.Latitude,
+            locationTracker.Longitude,
+            spot.latitude,
+            spot.longitude);
+
+        if (distanceMeters <= spot.radiusMeters)
+        {
+            isInsideAnySpot = true;
+            currentNearbySpot = spot;
+        }
+    }
+}
+\end{lstlisting}
+
+\section{AR орчинд авдар байрлуулах код}
+
+\begin{lstlisting}[language={[Sharp]C}, caption=ARChestSpawner - fallback placement логик]
+private void SpawnFallbackChest()
+{
+    Vector3 fallbackPosition = GetFallbackChestPosition();
+    Quaternion rotation = GetChestFacingRotation();
+
+    GameObject spawnedChest = Instantiate(chestPrefab, fallbackPosition, rotation);
+    PrepareSpawnedChest(spawnedChest);
+
+    hasSpawned = true;
+}
+\end{lstlisting}
+
+\section{Авдар нээх ба reward гаргах код}
+
+\begin{lstlisting}[language={[Sharp]C}, caption=ARChestInteraction - chest open хамгаалалт]
+private void OpenChest()
+{
+    if (isOpening || isOpened)
+    {
+        return;
+    }
+
+    isOpening = true;
+    isOpened = true;
+    DisableChestColliders();
+    PlayOpenAnimation();
+
+    if (rewardRevealRoutine != null)
+    {
+        StopCoroutine(rewardRevealRoutine);
+    }
+
+    rewardRevealRoutine = StartCoroutine(RevealRewardCollectible());
+}
+\end{lstlisting}
+
+\section{Reward claim endpoint-ийн жишээ}
+
+\begin{lstlisting}[language=JavaScript, caption=Express endpoint - давхардал хамгаалалттай reward claim]
+app.post("/spots/:id/claim", async (req, res) => {
+  const userId = req.user.id;
+  const tourismSpotId = req.params.id;
+
+  const existing = await prisma.userReward.findUnique({
+    where: {
+      userId_tourismSpotId: { userId, tourismSpotId }
+    }
+  });
+
+  if (existing) {
+    return res.json({ status: "alreadyClaimed", rewardId: existing.rewardId });
+  }
+
+  const spot = await prisma.tourismSpot.findUnique({
+    where: { id: tourismSpotId }
+  });
+
+  const claim = await prisma.userReward.create({
+    data: {
+      userId,
+      tourismSpotId,
+      rewardId: spot.rewardId
+    }
+  });
+
+  return res.json({ status: "claimed", claim });
+});
+\end{lstlisting}
+
+\input{src/database_schema}
+
+\end{sloppy}

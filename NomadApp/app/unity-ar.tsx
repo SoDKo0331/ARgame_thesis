@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Alert,
   Animated,
+  Linking,
   NativeModules,
   PermissionsAndroid,
   Platform,
@@ -15,7 +16,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import UnityView from '@azesmway/react-native-unity';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useCameraPermissions } from 'expo-camera';
+import { Camera } from 'expo-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 
@@ -24,8 +25,22 @@ import { useApp } from '@/context/AppContext';
 import { useI18n } from '@/context/I18nContext';
 
 const isUnityAvailable = !!NativeModules.RNUnityViewManager;
-const UNITY_LOAD_TIMEOUT_MS = 20000;
+const UNITY_LOAD_TIMEOUT_MS = 45000;
 const UNITY_PAYLOAD_RETRY_INTERVAL_MS = 1200;
+const iosCameraPermissionModule = NativeModules.NomadCameraPermissionModule as
+  | {
+      getCameraPermissionStatus?: () => Promise<{
+        granted?: boolean;
+        canAskAgain?: boolean;
+        status?: string;
+      }>;
+      requestCameraPermission?: () => Promise<{
+        granted?: boolean;
+        canAskAgain?: boolean;
+        status?: string;
+      }>;
+    }
+  | undefined;
 
 export default function UnityARScreen() {
   const router = useRouter();
@@ -68,7 +83,6 @@ export default function UnityARScreen() {
   const { user, spots, nearbySpots, rewards, claimReward } = useApp();
   const { t } = useI18n();
   const unityRef = useRef<UnityView>(null);
-  const [cameraPermission, requestCameraPermission] = useCameraPermissions();
 
   useEffect(() => {
     console.log('[UnityAR] Mounted. Params:', { mode, spotId, spotName, rewardId, rewardName });
@@ -146,6 +160,7 @@ export default function UnityARScreen() {
         previewPrefabKey: previewPrefabKey ?? '',
         claimedAtRaw: claimedAt ?? '',
         spotName: previewSpotName ?? '',
+        cameraPermissionGranted,
       });
     }
 
@@ -190,8 +205,10 @@ export default function UnityARScreen() {
       currentHorizontalAccuracyMeters: arContext?.horizontalAccuracyMeters,
       hasCurrentHeading: typeof arContext?.headingDegrees === 'number',
       currentHeadingDegrees: arContext?.headingDegrees,
+      cameraPermissionGranted,
     });
   }, [
+    cameraPermissionGranted,
     mode,
     modelPrefabKey,
     nearbySpots,
@@ -233,21 +250,33 @@ export default function UnityARScreen() {
     }
   }, []);
 
-  // Give Unity enough time to boot, load ARScene, and either respond with a real
-  // ready/error message or hit its own internal AR timeout.
-  useEffect(() => {
-    if (!isLoading || !cameraPermissionResolved) return;
+  const armLoadTimeout = useCallback(() => {
+    if (loadTimer.current) {
+      clearTimeout(loadTimer.current);
+    }
+
+    if (!isLoading || loadError) {
+      return;
+    }
 
     loadTimer.current = setTimeout(() => {
       stopPayloadRetryLoop();
       setLoadErrorMessage(t('unity.failedLoadBody'));
       setLoadError(true);
     }, UNITY_LOAD_TIMEOUT_MS);
+  }, [isLoading, loadError, stopPayloadRetryLoop, t]);
+
+  // Give Unity enough time to boot, load ARScene, and either respond with a real
+  // ready/error message or hit its own internal AR timeout.
+  useEffect(() => {
+    if (!isLoading || !cameraPermissionResolved) return;
+
+    armLoadTimeout();
 
     return () => {
       if (loadTimer.current) clearTimeout(loadTimer.current);
     };
-  }, [cameraPermissionResolved, isLoading, stopPayloadRetryLoop, t]);
+  }, [armLoadTimeout, cameraPermissionResolved, isLoading]);
 
   // Begin sending payload only after Unity is fully ready
   const startPayloadPumping = useCallback(() => {
@@ -284,6 +313,43 @@ export default function UnityARScreen() {
 
   useEffect(() => {
     let cancelled = false;
+
+    const resolveIosCameraPermission = async () => {
+      try {
+        if (
+          iosCameraPermissionModule?.getCameraPermissionStatus &&
+          iosCameraPermissionModule?.requestCameraPermission
+        ) {
+          let permission = await iosCameraPermissionModule.getCameraPermissionStatus();
+          console.log('[UnityARScreen] Native iOS camera permission status:', permission);
+
+          if (!permission.granted && permission.canAskAgain !== false) {
+            permission = await iosCameraPermissionModule.requestCameraPermission();
+            console.log('[UnityARScreen] Native iOS camera permission request result:', permission);
+          }
+
+          if (permission.granted) {
+            return true;
+          }
+
+          if (permission.canAskAgain === false) {
+            return false;
+          }
+        }
+      } catch (nativePermissionError) {
+        console.warn('[UnityARScreen] Native iOS camera permission fallback error:', nativePermissionError);
+      }
+
+      let permission = await Camera.getCameraPermissionsAsync();
+      console.log('[UnityARScreen] Expo camera permission status:', permission);
+
+      if (!permission.granted && permission.canAskAgain) {
+        permission = await Camera.requestCameraPermissionsAsync();
+        console.log('[UnityARScreen] Expo camera permission request result:', permission);
+      }
+
+      return permission.granted;
+    };
 
     const ensureCameraPermission = async () => {
       try {
@@ -328,38 +394,27 @@ export default function UnityARScreen() {
           return;
         }
 
-        // iOS: use the useCameraPermissions hook
-        try {
-          let granted = cameraPermission?.granted ?? false;
-          if (!granted && (cameraPermission?.canAskAgain ?? true)) {
-            const result = await requestCameraPermission();
-            granted = result.granted;
-          }
+        const granted = await resolveIosCameraPermission();
+        if (cancelled) {
+          return;
+        }
 
-          if (cancelled) return;
-
-          if (granted) {
-            setCameraPermissionGranted(true);
-            setCameraPermissionResolved(true);
-            return;
-          }
-        } catch (camErr) {
-          console.warn('[UnityARScreen] Native camera module error:', camErr);
-          // Fail open — let Unity handle its own camera request
-          if (!cancelled) {
-            setCameraPermissionGranted(true);
-            setCameraPermissionResolved(true);
-          }
+        if (granted) {
+          setCameraPermissionGranted(true);
+          setCameraPermissionResolved(true);
           return;
         }
 
         setCameraPermissionGranted(false);
         setCameraPermissionResolved(true);
-        Alert.alert(
-          t('unity.cameraPermissionTitle'),
-          t('unity.cameraPermissionBody'),
-          [{ text: t('unity.cameraPermissionButton'), onPress: () => router.back() }],
-        );
+        Alert.alert(t('unity.cameraPermissionTitle'), t('unity.cameraPermissionBody'), [
+          {
+            text: t('unity.cameraPermissionButton'),
+            onPress: () => {
+              void Linking.openSettings().catch(() => router.back());
+            },
+          },
+        ]);
       } catch (error) {
         console.warn('[UnityARScreen] camera permission error:', error);
         if (!cancelled) {
@@ -375,7 +430,7 @@ export default function UnityARScreen() {
     return () => {
       cancelled = true;
     };
-  }, [router, t, cameraPermission, requestCameraPermission]);
+  }, [router, t]);
 
   useEffect(() => {
     if (!isUnityAvailable || !cameraPermissionResolved || !cameraPermissionGranted || loadError || !isLoading) {
@@ -425,15 +480,22 @@ export default function UnityARScreen() {
         case 'reloading_scene':
         case 'ar_initializing':
         case 'requesting_camera_permission':
+        case 'camera_permission_pending':
         case 'waiting_for_camera_frame':
+        case 'native_unity_initialized':
+          hasReceivedUnityActivity.current = true;
+          armLoadTimeout();
           console.log('[Unity→RN] Progress update:', data.status);
+          if (data.status === 'native_unity_initialized') {
+            void sendUnityPayload();
+          }
           return;
         case 'ready':
           console.log('[Unity→RN] Unity AR scene is READY.');
           markReady();
           return;
         case 'error':
-          console.error('[Unity→RN] ERROR received:', data);
+          console.warn('[Unity→RN] ERROR received:', data);
           if (loadTimer.current) clearTimeout(loadTimer.current);
           stopPayloadRetryLoop();
           setLoadErrorMessage(getUnityLoadErrorMessage(data.code, data.message));

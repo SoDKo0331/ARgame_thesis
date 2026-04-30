@@ -1,0 +1,72 @@
+\section{Өгөгдлийн сангийн зохиомж ба хүснэгтүүд}
+\begin{sloppy}
+
+Системийн өгөгдлийн сан нь `User`, `TourismSpot`, `Reward`, `UserReward` гэсэн үндсэн entity-үүдэд тулгуурлана. Энэхүү загварыг PostgreSQL реляцийн мэдээллийн сан дээр Prisma ORM ашиглан хэрэгжүүлсэн бөгөөд reward collection-ийн бизнес дүрмийг өгөгдлийн түвшинд баталгаажуулахад чиглэсэн.
+
+\subsection{Хүснэгтүүдийн бүтэц}
+
+\begin{table}[H]
+    \centering
+    \caption{Users (Хэрэглэгчид) хүснэгтийн бүтэц}
+    \label{tab:users_table}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{Талбарын нэр} & \textbf{Төрөл} & \textbf{Тайлбар} \\ \hline
+        id & String (CUID) & Хэрэглэгчийн цор ганц ID \\ \hline
+        deviceId & String (Unique) & Төхөөрөмжийн танигч \\ \hline
+        displayName & String & Хэрэглэгчийн харагдах нэр \\ \hline
+        lastLoginAt & DateTime & Хамгийн сүүлд session сэргээсэн огноо \\ \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{TourismSpots (Аялал жуулчлалын байршил) хүснэгтийн бүтэц}
+    \label{tab:tourism_spots_table}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{Талбарын нэр} & \textbf{Төрөл} & \textbf{Тайлбар} \\ \hline
+        id & String (CUID) & Байршлын цор ганц ID \\ \hline
+        name & String & Байршлын нэр \\ \hline
+        latitude & Decimal & Өргөрөг \\ \hline
+        longitude & Decimal & Уртраг \\ \hline
+        radiusMeters & Float & Идэвхжих радиус \\ \hline
+        rewardId & String & Холбогдох шагналын ID \\ \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Rewards (Шагнал) хүснэгтийн бүтэц}
+    \label{tab:rewards_table}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{Талбарын нэр} & \textbf{Төрөл} & \textbf{Тайлбар} \\ \hline
+        id & String (CUID) & Шагналын цор ганц ID \\ \hline
+        name & String & Шагналын нэр \\ \hline
+        description & String & Соёлын болон түүхэн тайлбар \\ \hline
+        imageUrl & String & Reward дүрслэлийн URL \\ \hline
+        previewPrefabKey & String & Unity prefab-ийн түлхүүр \\ \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{UserRewards (Хэрэглэгчийн цуглуулга) хүснэгтийн бүтэц}
+    \label{tab:user_rewards_table}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{Талбарын нэр} & \textbf{Төрөл} & \textbf{Тайлбар} \\ \hline
+        id & String (CUID) & Бүртгэлийн цор ганц ID \\ \hline
+        userId & String & Хэрэглэгчийн ID \\ \hline
+        rewardId & String & Авсан reward-ийн ID \\ \hline
+        tourismSpotId & String & Reward авсан байршлын ID \\ \hline
+        claimedAt & DateTime & Reward claim хийсэн огноо \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Хүснэгт хоорондын хамаарал}
+
+`TourismSpot` бүр нэг `Reward`-тай холбогдоно. `UserReward` хүснэгт нь `User`, `TourismSpot`, `Reward` гурвыг холбож, аль хэрэглэгч аль байршлаас аль reward авсныг хадгална. `@@unique([userId, tourismSpotId])` constraint нь нэг хэрэглэгч нэг байршлын reward-ийг давхар авахыг хориглодог. Ингэснээр reward collection-ийн бизнес дүрэм зөвхөн клиент талын интерфэйс дээр бус, өгөгдлийн сангийн түвшинд ч хамгаалагдана.
+
+\end{sloppy}

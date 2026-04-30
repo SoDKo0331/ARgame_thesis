@@ -1,0 +1,43 @@
+\chapter*{Аялал жуулчлалын байршилд суурилсан үйлчилгээ ба контекст-мэдрэмтгий мобайл системийн онолын тойм}
+\begin{sloppy}
+
+\section*{Гүйцэтгэх хураангуй}
+Байршилд суурилсан үйлчилгээ буюу LBS нь хэрэглэгчийн географ байршлыг үйлчилгээний логик, агуулга, хэрэглэгчийн интерфэйс, зөвлөмжийн механизмтай холбодог системийн анги юм. Аялал жуулчлалын орчинд энэ парадигм нь маршрутын навигаци, ойр орчны тайлбар, музейн дижитал хөтөч, өгүүлэмжтэй алхалт, хувьчилсан санал, контекст-мэдрэмтгий зөвлөмж, AR чиглүүлэлт зэрэг олон хэрэглээнд хөгжсөн.
+
+Онолын хувьд гол сургамж нь ``байршил'' дангаараа хангалтгүйд оршино. Anind K. Dey контекстийг хэрэглэгч ба програмын харилцан үйлчлэлд хамаарах entity-ийн нөхцөл байдлыг тодорхойлох аливаа мэдээлэл гэж томъёолсон; Bill Schilit харин context-aware application-уудыг proximate selection, automatic contextual reconfiguration, contextual information and commands, context-triggered actions гэж ангилсан. Иймээс аялал жуулчлалын сайн систем нь зөвхөн координат уншдаггүй, харин цаг, хөдөлгөөний төлөв, төхөөрөмжийн байдал, хэрэглэгчийн сонирхол, айлчлалын түүх, дэд бүтцийн нягтрал, агуулгын семантик зэргийг хамтад нь тайлбарладаг.
+
+Техникийн хувьд нэг ``хамгийн сайн'' байршил тогтоох технологи гэж байхгүй. Гадаа орчинд GNSS/GPS илүү үр дүнтэй ч хотын өндөр барилга, дотор орчин, богино радиустай intent-level interaction дээр Wi-Fi RTT, BLE beacon/direction finding, UWB, мөн GNSS-IMU-Wi-Fi-BLE sensor fusion илүү оновчтой байдаг. Архитектурын түвшинд шилдэг практик нь сенсорын давхарга, positioning/fusion давхарга, context model, inference engine, content orchestration, UX delivery, privacy-governance зэргийг салангид давхаргууд болгон зохион байгуулахад оршдог.
+
+\section*{Судалгааны хүрээ ба суурь ойлголтууд}
+LBS-ийг хамгийн энгийнээр ``байршлын мэдээллийг ашиглан хэрэглэгчид агуулга эсвэл үйлчилгээ хүргэх систем'' гэж ойлгож болно. Техникийн онолд энэ нь дөрвөн үндсэн бүрэлдэхүүнтэй: мобайл төхөөрөмж, positioning subsystem, communication network, service/content provider. OGC-ийн OpenLS нь position access, routing, proximity service, vector map portrayal, geography voice-graphics зэрэг олон төрлийн сервисийг стандарт интерфэйсээр холбох архитектурын суурийг өгсөн.
+
+Контекст-мэдрэмтгий систем гэдэг нь байршлын дохиог ``түүхэн, хэрэглэгчийн, орчны, төхөөрөмжийн, үйл ажиллагааны'' шинжтэй өгөгдөлтэй хамтатган ойлгож, түүндээ нийцүүлэн системийн зан үйлийг өөрчилдөг систем юм. Аялал жуулчлалын хэрэглээнд онолын хувьд дор хаяж таван төрлийн туршлага ялгардаг:
+\begin{enumerate}
+    \item \textbf{Exploratory city guide} — хэрэглэгч хаана байгаагаас хамаарч POI, maps, routing өгдөг систем.
+    \item \textbf{Situated interpretation} — музей, үзэсгэлэн, дурсгалт газар дээр тухай бүрийн тайлбар өгдөг систем.
+    \item \textbf{Adaptive itinerary system} — сонирхол, хугацаа, нээлттэй цаг, тээврийн нөхцөл зэргийг авч үзэн маршрут үүсгэдэг систем.
+    \item \textbf{Route-based narrative experience} — хэрэглэгч маршрутын дагуу урагшлах тусам аудио, AR, тоглоомчилсон үйлдэл үе шаттай нээгддэг туршлага.
+    \item \textbf{Interactive recommender} — аяллын өмнөх ба явцын үед хувьчилсан санал, эрэмбэлэлт өгдөг систем.
+\end{enumerate}
+
+\section*{Геолокацийн механик ба триггерүүд}
+GNSS байрлал тогтоолтын физик үндэс нь satellite signal-ийн тархалтын хугацааг хэмжиж pseudorange гарган авах, дараа нь дор хаяж дөрвөн хиймэл дагуулын ажиглалтаас receiver position ба clock offset-ийг шийдэхэд оршдог. Indoor ба near-field interaction дээр өөр механик орж ирдэг: Android-ийн Wi-Fi RTT (IEEE 802.11-2016 FTM), BLE Direction Finding (AoA/AoD), болон UWB технологиуд нь <10 см түвшний нарийвчлалыг дэмждэг.
+
+Орон зайн тооцоолол буюу spatial computing-ийн суурь ойлголтууд нь coordinate frame, pose, anchor, world alignment, scene understanding, geospatial attachment юм. Apple visionOS болон Google ARCore Geospatial API зэрэг системүүд real-world place дээр digital content attach хийх боломжийг олгодог.
+
+\section*{Триггерийн механизм ба хэрэглээ}
+Бодит орчны триггерийн онол нь ``координат'' бус ``event semantics'' дээр төвлөрдөг:
+\begin{itemize}
+    \item \textbf{Geofence enter/exit:} Хотын бүс, парк, дурсгалт газрын ерөнхий хүрээ.
+    \item \textbf{Dwell / loitering:} POI notifier, loitering delay-ээр false alert-ийг бууруулдаг.
+    \item \textbf{Beacon proximity:} Музейн танхим, бүсийн түвшний триггер.
+    \item \textbf{Directional trigger:} ``Яг аль объект вэ?'' гэдгийг ялгах.
+    \item \textbf{Activity-aware trigger:} Walking tour үед л идэвхжих.
+\end{itemize}
+
+\section*{Хүртээмж, Ёс зүй ба Нууцлал}
+Хууль-зүйн үндсэн баримжаагаар байршлын өгөгдөл нь personal data бөгөөд GDPR зарчмуудыг (lawful basis, purpose limitation, proportionality) хангах ёстой. Privacy-by-design-ийн бодит хэрэгжилт нь exact tracking-ийг default болгохгүй байх, proximity data ашиглах, geotagged media-аас GPS metadata-ийг устгах зэрэг хэлбэртэй байна.
+
+Дүгнэж хэлэхэд, аялал жуулчлалын LBS системийн хамгийн оновчтой хэлбэр нь hybrid positioning + layered context model + event-driven trigger + route-aware content orchestration + privacy-minimal governance гэсэн таван тулгууртай байна.
+
+\end{sloppy}

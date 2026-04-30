@@ -11,7 +11,8 @@
       "bundleIdentifier": "com.nomadapp.adventure",
       "infoPlist": {
         "NSCameraUsageDescription": "Allow Nomad Adventure to use the camera for AR scenes and reward previews."
-      }
+      },
+      "appleTeamId": "W8LJ5YQYWT"
     },
     "android": {
       "package": "com.nomadapp.adventure",

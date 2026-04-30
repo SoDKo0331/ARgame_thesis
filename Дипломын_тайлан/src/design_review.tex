@@ -1,0 +1,41 @@
+\chapter*{Мобайл AR аялал жуулчлалын тоглоомын систем дизайны онолын тойм}
+\begin{sloppy}
+
+\section*{Гүйцэтгэх хураангуй}
+Мобайл AR аялал жуулчлалын тоглоомын үндсэн инженерчлэлийн асуудал нь локал AR поз ба глобал геопозицыг нэгэн зэрэг зөв удирдах асуудал юм. GPS/GNSS нь хэрэглэгчийн глобал байршлыг өгдөг боловч ухаалаг утас нээлттэй тэнгэрийн дор ч түгээмэлдээ ойролцоогоор 4.9 м радиустай алдаатай байдаг. Иймээс сайн архитектур нь географ trigger давхаргыг визуал/инерцийн бэхэлгээ давхаргаас тусгаарлах ёстой.
+
+Платформ тодорхойгүй үед хамгийн зөв чиглэл нь capability-based, degradation-friendly архитектур юм. Клиент талд нэг ``AR session orchestration'' давхарга байрлуулж, мэдрэгчийн бэлэн байдал, сүлжээний чанар зэргийг хэмжин тухайн мөчийн тоглоомын горимыг сонгодог байх нь зөв.
+
+\section*{Суурь архитектурын зарчим}
+Логикийг дөрвөн том хавтгайд салгах нь оновчтой:
+\begin{itemize}
+    \item \textbf{Perception plane:} Камер ба мэдрэгчээс local pose үүсгэнэ.
+    \item \textbf{Geospatial plane:} Map/route/geofence/POI логикийг шийднэ.
+    \item \textbf{Content plane:} Localized narrative, quest, media asset-уудыг удирдана.
+    \item \textbf{Service plane:} User state, realtime sync, analytics-ийг хариуцна.
+\end{itemize}
+
+\section*{Клиент талын мэдрэгч ба AR Perception Stack}
+Гадаах AR аяллын тоглоомд нэг ч мэдрэгч хангалттай биш. Архитектурын хувьд дараах мэдрэгчүүдийн хослолыг ашигладаг:
+\begin{itemize}
+    \item \textbf{GPS/GNSS:} Глобал байршил, бүсийн trigger , POI prefetch-д зориулагдсан.
+    \item \textbf{IMU (Accelerometer + Gyroscope):} Өндөр давтамжтай хөдөлгөөн, pose smoothing хийхэд ашиглагдана.
+    \item \textbf{Magnetometer:} Magnetic north-той холбосон heading буюу чиглэл тогтооход тусална.
+    \item \textbf{Barometer:} Өндрийн ялгаа, шаталсан орчинд trigger өгөхөд ашиглагдана.
+    \item \textbf{Камер + SLAM/VIO:} Локал pose, гадаргуу илрүүлэлт, stable anchors үүсгэх үндсэн хэрэгсэл.
+\end{itemize}
+
+\section*{Геолокаци ба Орон зайн логик}
+Глобал ба локал хоёр координатын ертөнцийг салгаж ойлгох нь чухал. Глобал ертөнц нь lat/lon/alt-аар бодогддог бол локал ертөнц нь camera pose, anchor-оор бодогдоно. 2024 оны судалгаагаар LBAR системүүд хэт хатуу маршрутаар хэрэглэгчийг чиглүүлбэл орон зайн танин мэдэхүйн эрх чөлөөг хязгаарлах талтай байдаг тул detour-friendly буюу уян хатан маршрут төлөвлөх нь зөв.
+
+\section*{Контент хүргэлт ба Серверийн архитектур}
+Контентыг metadata (JSON/Proto) ба binary asset (GLB, texture, audio) гэсэн хоёр өөр ангиар удирдах нь оновчтой. Том медиа файлуудыг CDN-ээр дамжуулан хүргэж, хэрэглэгчийн төлөвийг (state) authoritative backend-д хадгална.
+\begin{itemize}
+    \item \textbf{Offline-first стратеги:} Зөвхөн газрын зураг бус, ойролцоох POI, localized text, 3D bundles зэргийг local cache-д хадгалах.
+    \item \textbf{Headless CMS:} Presentation-ийг backend-ээс салгаж, олон хэлний (localization)Fallback логикийг хэрэгжүүлэх.
+\end{itemize}
+
+\section*{Нууцлал ба Талбайн QA}
+Байршил, камер нь мэдрэмтгий өгөгдөл тул Least Privilege зарчмыг баримталж, зөвшөөрлийг progressive disclosure хэлбэрээр (яг хэрэгцээ гарсан үед нь) авах ёстой. Туршилтын хувьд ARCore Recording \& Playback API ашиглан бодит орчны session-ийг бичиж, deterministic regression test хийх нь хамгийн үр дүнтэй аргад тооцогдож байна.
+
+\end{sloppy}

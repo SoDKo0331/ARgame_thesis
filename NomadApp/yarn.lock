@@ -29,11 +29,11 @@ __metadata:
 
 "@azesmway/react-native-unity@patch:@azesmway/react-native-unity@npm%3A1.0.11#~/.yarn/patches/@azesmway-react-native-unity-npm-1.0.11-f6b97d50a7.patch":
   version: 1.0.11
-  resolution: "@azesmway/react-native-unity@patch:@azesmway/react-native-unity@npm%3A1.0.11#~/.yarn/patches/@azesmway-react-native-unity-npm-1.0.11-f6b97d50a7.patch::version=1.0.11&hash=c5cb84"
+  resolution: "@azesmway/react-native-unity@patch:@azesmway/react-native-unity@npm%3A1.0.11#~/.yarn/patches/@azesmway-react-native-unity-npm-1.0.11-f6b97d50a7.patch::version=1.0.11&hash=1090de"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/428e1bb1f58c5734843b7ef3c664211df7c0aa976b35a95dc69aab25dd223af8e16d29e345ea47d056112e292e7145c81a7283dbf86dc0a69a10fd1ffc557868
+  checksum: 10c0/c288d92a5e07ac3ea202655c713766cc7db1d9a67887d1f55e09e68bada67200841f715d16b7e6944373dfae1fc576cd026b3c7a8a3a999d28e271910d0d7984
   languageName: node
   linkType: hard
 

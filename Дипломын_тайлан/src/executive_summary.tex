@@ -1,0 +1,27 @@
+\chapter*{Гүйцэтгэлийн хураангуй}
+\begin{sloppy}
+
+Энэхүү тайлан нь Unity-ийн AR Foundation, Google-ын ARCore, болон Apple-ийн ARKit платформуудын үзүүлэлт, давуу ба сул тал, хөгжүүлэлтийн ажлын урсгал, ба аялал жуулчлалд чиглэсэн AR хэрэглээнд (байршилд суурилсан AR, зайн мэдээллийн давхарга, навигаци, өгүүллэгийн түүх, бага сүлжээний нөхцөл зэрэг) тохирох байдалд хийсэн иж бүрэн харьцуулалт юм.
+
+\section*{Платформуудын танилцуулга}
+\begin{itemize}
+    \item \textbf{Unity AR Foundation (Unity 3D):} Android, iOS болон бусад XR төхөөрөмжүүдийг нэг кодын цөм дээр бүтээх боломж олгодог cross-platform framework. Үндсэндээ ARKit эсвэл ARCore-ийг дуудаж ажилладаг тул хөгжүүлэлтийн цагийг хэмнэдэг.
+    \item \textbf{ARCore (Google):} Android (ба тодорхой iOS) төхөөрөмжүүдэд зориулсан SDK. Motion Tracking, Planes, Depth API болон Geospatial API (Google VPS) зэрэг давуу талтай. Cloud Anchors ашиглан олон хэрэглэгчийн туршлагыг дэмждэг.
+    \item \textbf{ARKit (Apple):} iOS төхөөрөмжүүдэд зориулсан стандарт SDK. LiDAR сканнер, TrueDepth камер ашиглан өндөр нарийвчлалтай SLAM, World Tracking болон Location Anchors боломжийг олгодог.
+\end{itemize}
+
+\section*{Аялал жуулчлалын AR-д зориулсан тохиромжит боломжууд}
+\begin{itemize}
+    \item \textbf{Байршилд суурилсан интерактив туршлага:} ARCore-ийн Geospatial API нь дэлхий даяар газар зүйн координатын дагуу виртуал контент байршуулах боломжийг олгож байна. ARKit-ын Location Anchor нь тодорхой хотуудад л боломжтой байгаа ч өндөр нарийвчлалтай.
+    \item \textbf{POI давхарга ба түүхийн өгүүллэг:} Дурсгалын газрууд дээр мэдлэг, мультимедиа өгүүлэхэд AR ашиглагдана. ARKit ба ARCore хоёул камерыг ашиглан дүрс болон объект таних (Markerless AR) боломжтой.
+    \item \textbf{Навигаци ба зааварчилгаа:} AR Foundation + Raycast ашиглан хотын гудамжинд виртуал заагч, сум байршуулах боломжтой. ARCore Гео API нь GPS-ийн алдааг сайжруулж, бодит зам дээр 3D заавар заадаг.
+    \item \textbf{Олон хэрэглэгч, хуваалцсан AR:} ARCore Cloud Anchors нь Android ба iOS хооронд (Cross-platform) хуваалцах боломжийг олгодог бол ARKit нь Apple-ийн экосистем дотор (Multipeer Connectivity) ажилладаг.
+\end{itemize}
+
+\section*{Техникийн гүйцэтгэл ба Архитектур}
+Unity-ийн AR Foundation нь Apple-ийн ARKit XR Plugin болон Google-ийн ARCore XR Plugin-тай холбогдож, төхөөрөмжүүд дээрх SDK-г дуудаж ажиллуулдаг. Бага сүлжээний нөхцөлд офлайн байдлаар SLAM-ийг үргэлжлүүлэн ашиглаж болох боловч үүлэн үйлчилгээ шаардлагатай (Cloud Anchors, Geospatial) функцүүд ажиллахгүй.
+
+\section*{Ирээдүйн чиглэл}
+Unity AR Foundation нь одоо VisionOS (Apple Vision Pro) дэмждэг болсон бөгөөд ирээдүйд ямар ч XR платформд нэгдмэл хөгжүүлэлтийн гүүр болно. ARCore нь Geospatial API-г дэлхийд түгээж байгаа бол ARKit нь RealityKit Sync болон шинэ Location Anchor-уудыг хөгжүүлсээр байна.
+
+\end{sloppy}
